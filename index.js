@@ -28,11 +28,12 @@ app.get("/", (request, response) => {
     })
 })
 
-app.post("/cadastrar", (request, response)=> {
+app.post("/cadastrar", (request, response) => {
     const { titulo, artista, genero, ano, duracao } = request.body
-    const comandoInsert ="INSERT INTO musicas_martins(titulo, artista, genero, ano, duracao) VALUES(?, ?, ?, ?, ?)"
-    
-    sql.query(comandoInsert, [titulo, artista, genero, ano, duracao], (error) => { 
+
+    const comandoInsert = "INSERT INTO musicas_martins(titulo, artista, genero, ano, duracao) VALUES (?, ?, ?, ?, ?)"
+
+    sql.query(comandoInsert, [titulo, artista, genero, ano, duracao], (error) => {
         if (error) {
             console.log(error)
             return
@@ -41,6 +42,25 @@ app.post("/cadastrar", (request, response)=> {
         response.status(201).json({ mensagem: "Música cadastrada com sucesso!" })
     })
 })
+
+app.delete("/apagar/:id", (request, response) => {
+    const { id } = request.params
+
+    const comandoDelete = "DELETE FROM musicas_martins WHERE id = ?"
+
+    sql.query(comandoDelete, [id], (error) => {
+        if (error) {
+            console.log(error)
+            response.status(500).json({ mensagem: "Erro ao apagar música" })
+            return
+        }
+
+        response.json({ mensagem: "Música apagada com sucesso!" })
+    })
+})
+
+
+
 
 app.listen(3000, () => {
     console.log("Servidor rodando na porta 3000")
